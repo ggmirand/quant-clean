@@ -2,8 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Quant Clean</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quant Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      :root{
+        --bg:#0b111b; --panel:#121a26; --muted:#99a3b5; --text:#e8eefb;
+        --accent:#00c805; --accent2:#2f6fed; --danger:#ff7272; --ok:#27d17f;
+        --border:rgba(255,255,255,0.06);
+      }
+      html,body,#root{height:100%}
+      body{margin:0;background:var(--bg);color:var(--text);font-family:Poppins,ui-sans-serif,system-ui,Segoe UI,Roboto}
+      button{font-family:inherit}
+      table{font-size:14px}
+      th,td{padding:6px 0}
+      th{text-transform:uppercase;letter-spacing:.02em;font-size:12px;color:#b7c3d6}
+      input{outline:none}
+    </style>
   </head>
   <body>
     <div id="root"></div>
