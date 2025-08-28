@@ -10,21 +10,31 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKEND="$ROOT_DIR/backend"
 FRONTEND="$ROOT_DIR/frontend"
 
-echo "== Quant Clean Launcher =="
+echo "== Quant Clean Launcher (system Python, no venv) =="
 
-# --- Backend ---
-echo "-> Backend setup"
-python3 -m venv "$BACKEND/.venv" || true
-source "$BACKEND/.venv/bin/activate" || true
-python -m pip install --upgrade pip
-python -m pip install -r "$BACKEND/requirements.txt"
-nohup uvicorn src.main:app --reload --host "$API_HOST" --port "$API_PORT" > "$BACKEND/api.log" 2>&1 &
-deactivate || true
+# --- Backend (system Python) ---
+echo "-> Backend deps (pip --user)"
+python3 -m pip install --user --upgrade pip
+python3 -m pip install --user -r "$BACKEND/requirements.txt"
+
+# free ports if occupied
+if command -v fuser >/dev/null 2>&1; then
+  fuser -k "$API_PORT"/tcp || true
+  fuser -k "$UI_PORT"/tcp || true
+fi
+
+echo "-> Starting API http://$API_HOST:$API_PORT"
+nohup python3 -m uvicorn src.main:app --host "$API_HOST" --port "$API_PORT" --reload > "$BACKEND/api.log" 2>&1 &
 
 # --- Frontend ---
-echo "-> Frontend setup"
+echo "-> Frontend deps (npm install)"
 cd "$FRONTEND"
+if ! command -v npm >/dev/null 2>&1; then
+  echo "ERROR: npm not found. Install Node.js 20+ (e.g., https://nodejs.org or nvm)."
+  exit 1
+fi
 npm install
+echo "-> Starting UI http://$UI_HOST:$UI_PORT"
 nohup npm run dev -- --host "$UI_HOST" --port "$UI_PORT" > "$FRONTEND/ui.log" 2>&1 &
 
 cd "$ROOT_DIR"
